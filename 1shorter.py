@@ -1,27 +1,13 @@
-import test, os 
-import math
-
+import test, os , math
 def get_face_indices(side_len, startp, endp):
-    if side_len in startp:
-        start_face = startp.index(side_len)*2 + 1
-    else:
-        start_face = startp.index(0)*2
-
-    if side_len in endp:
-        end_face = endp.index(side_len)*2 + 1
-    else:
-        end_face = endp.index(0)*2
-    
+    if side_len in startp: start_face = startp.index(side_len)*2 + 1
+    else: start_face = startp.index(0)*2
+    if side_len in endp: end_face = endp.index(side_len)*2 + 1
+    else: end_face = endp.index(0)*2
     return start_face, end_face
-
-def is_opposite(f1, f2):
-    if abs(f1-f2) == 1 and min(f1, f2) % 2 == 0:
-        return True
-    return False
-
-for filename in os.scandir("uloha1\ENG"):
-    if filename.is_file() and "_in" in filename.name:
-        inp = open(filename, "r").read().split("\n")[:-1]
+for filename in os.listdir("uloha1\ENG"):
+    if "_in" in filename:
+        inp = open("uloha1/ENG/"+filename, "r").read().split("\n")[:-1]
         if len(inp) != 3: 
             print("Invalid Input")
             continue
@@ -33,23 +19,22 @@ for filename in os.scandir("uloha1\ENG"):
         except: 
             print("Invalid Input")
             continue
-        is_too_close = False
-        for i in startp + endp:
-            if i in range(1, 20) or i in range(side_len - 19, side_len):
-                is_too_close = True
-                break
-        if is_too_close:
+        close_points = 0
+        if sum((0<i<20 or side_len-20<i<side_len) for i in startp + endp)>1:
             print("Invalid input")
             continue
-        face1, face2 = get_face_indices(side_len, startp, endp)
-        if not is_opposite(face1, face2):
-            pipedist = abs(startp[0] - endp[0]) + abs(startp[1] - endp[1] ) + abs(startp[2] - endp[2])
-            axes = [face1 // 2, face2 //2]
-            paxis = [axis for axis in (0, 1, 2) if axis not in axes][0]
+        if side_len in startp: face1 = startp.index(side_len)*2 + 1
+        else: face1 = startp.index(0)*2
+        if side_len in endp: face2 = endp.index(side_len)*2 + 1
+        else: face2 = endp.index(0)*2
+        if not (face1 != face2 and face1//2 == face2//2):
+            pipedist=sum([abs(startp[i]-endp[i]) for i in range(3)])
+            axes = sorted([face1 // 2, face2 //2])
+            paxis = axes[0]*2-axes[1] #✨✨✨
             hosedist = math.sqrt((abs(startp[axes[0]] - endp[axes[0]]) + abs(startp[axes[1]] - endp[axes[1]]))**2 + abs(startp[paxis] - endp[paxis])**2)
         else:
             axis = face1 // 2
-            mindist = side_len #cant be larger than side len
+            mindist = side_len
             minhosedist = 2 * side_len
             startp_face_coords = startp[0:axis] + startp[axis+1:]
             endp_face_coords = endp[0:axis] + endp[axis+1:]
