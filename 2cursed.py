@@ -1,5 +1,4 @@
-import os, math, time
-for f in filter(lambda f: "_in" in f, os.listdir("uloha2\ENG")):
-    try: points = [tuple([float(c) for c in p.split(" ")]) for p in open("uloha2/ENG/"+f, "r").read().split("\n")[:-1]]
-    except: print("Invalid input"); continue
-    print(("There exists a line connecting all three points.\n" + f"Point {'ABC'[points.index((sorted(list(zip(*points))[0])[1], sorted(list(zip(*points))[1])[1]))]} is in the middle." if len(set(points)) == 3 else "Some points are identical.") if sum(sorted([math.sqrt((points[i][0]-points[j][0])**2 + (points[i][1]-points[j][1])**2) for i in range(3) for j in range(i+1, 3)])[:2]) == sorted([math.sqrt((points[i][0]-points[j][0])**2 + (points[i][1]-points[j][1])**2) for i in range(3) for j in range(i+1, 3)])[2] else "No line connects all points.")
+import os
+for f in [f for f in os.listdir("uloha2\ENG")if"_in"in f]:
+    try:p=[tuple([float(c)for c in p.split(" ")])for p in open("uloha2/ENG/"+f,"r").read().split("\n")[:-1]]; print(("There exists a line connecting all three points.\n"+f"Point {'ABC'[p.index((sorted(list(zip(*p))[0])[1], sorted(list(zip(*p))[1])[1]))]} is in the middle."if len(set(p))==3 else"Some points are identical.")if sum(sorted([((p[i][0]-p[j][0])**2+(p[i][1]-p[j][1])**2)**0.5 for i in range(3)for j in range(i+1,3)])[:2])==sorted([((p[i][0]-p[j][0])**2+(p[i][1]-p[j][1])**2)**0.5 for i in range(3)for j in range(i+1, 3)])[2]else"No line connects all points.")
+    except:print("Invalid input");continue
